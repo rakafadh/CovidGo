@@ -6,18 +6,28 @@ using UnityEngine.SceneManagement;
 public class BackgroundMusic : MonoBehaviour
 {
     private static BackgroundMusic backgroundMusic;
+    public string musicTitle; // Judul lagu untuk identifikasi
+    private AudioSource audioSource;
 
     void Awake()
     {
         if (backgroundMusic == null)
         {
             backgroundMusic = this;
-            DontDestroyOnLoad(backgroundMusic);
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (backgroundMusic != this && backgroundMusic.musicTitle != musicTitle)
+        {
+            Destroy(backgroundMusic.gameObject);
+            backgroundMusic = this;
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
             Destroy(gameObject);
         }
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     void OnEnable()
@@ -35,10 +45,8 @@ public class BackgroundMusic : MonoBehaviour
         RestartMusic();
     }
 
-    void RestartMusic()
+    public void RestartMusic()
     {
-        // Assuming you have an AudioSource component attached to the same GameObject
-        AudioSource audioSource = GetComponent<AudioSource>();
         if (audioSource != null)
         {
             audioSource.Stop();
